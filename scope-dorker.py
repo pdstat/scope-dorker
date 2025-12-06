@@ -30,6 +30,13 @@ def parse_args() -> argparse.Namespace:
         default=True,
         help="Include out-of-scope sites in the generated dorks",
     )
+    parser.add_argument(
+        "-p",
+        "--programs",
+        nargs="+",
+        help="List of HackerOne program IDs to include in the dorking process",
+    )
+    
     return parser.parse_args()
 
 
@@ -42,8 +49,15 @@ def main() -> None:
     dorker = GoogleDorker()
 
     dork_results = list()
-    program_scopes = miner.get_all_scopes(auth_header, include_oos=args.out_of_scope)
+    program_scopes = list()
+    if args.programs:
+        for program_id in args.programs:
+            scopes = miner.get_program_scopes(auth_header, program_id, include_oos=args.out_of_scope)
+            program_scopes.append(scopes)
+    else:
+        program_scopes.append(miner.get_all_scopes(auth_header, include_oos=args.out_of_scope))
     
+    print(program_scopes[0].get_url_assets())
     for program_scope in program_scopes:
         results = dorker.execute_dork(args.query, program_scope)
         if results is not None:
