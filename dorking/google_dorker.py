@@ -10,7 +10,7 @@ class GoogleDorker:
         google_config = self.config.get_google_config()
         self.api_key = google_config.get("api-key", "")
         self.cse_id = google_config.get("cse-id", "")
-        self.program_result_limit = google_config.get("program_result_limit", 100)
+        self.program_result_limit = google_config.get("program-result-limit", 100)
         self.max_results_limit = google_config.get("search-limit", 10000)
 
     def execute_dork(self, query: str, prog_scope: ProgramScope) -> DorkResults:

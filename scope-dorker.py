@@ -7,9 +7,6 @@ from scopeminer import H1ScopeMiner
 
 def _build_auth_header(config: Config) -> str:
     username, api_key = config.get_hackerone_credentials()
-    if not username or not api_key:
-        raise SystemExit("HackerOne username/api-key missing in config.json")
-
     credentials = f"{username}:{api_key}"
     return base64.b64encode(credentials.encode("utf-8")).decode("ascii")
 
@@ -57,7 +54,6 @@ def main() -> None:
     else:
         program_scopes.append(miner.get_all_scopes(auth_header, include_oos=args.out_of_scope))
     
-    print(program_scopes[0].get_url_assets())
     for program_scope in program_scopes:
         results = dorker.execute_dork(args.query, program_scope)
         if results is not None:

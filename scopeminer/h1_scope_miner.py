@@ -38,6 +38,10 @@ class H1ScopeMiner(ScopeMiner):
         s.mount("https://", HTTPAdapter(max_retries=retries))
         while True:
             res = s.get(current_url, headers={"Authorization": f"Basic {authz}"})
+
+            if res.status_code == 401:
+                raise SystemExit(f"Failed to get scopes for program check API keys")
+
             data = res.json()
             scopes = data.get("data", [])
             for scope in scopes:
@@ -63,7 +67,7 @@ class H1ScopeMiner(ScopeMiner):
             res = requests.get(current_url, headers={"Authorization": f"Basic {authz}"})
 
             if res.status_code != 200:
-                raise Exception(f"Failed to get programs: {res.status_code} {res.text}")
+                raise SystemExit(f"Failed to get programs: {res.status_code} {res.text}")
         
             data = res.json()
             programs = data.get("data", [])

@@ -14,6 +14,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "google": {
             "api-key": "<insert-your-google-api-key>",
             "cse-id": "<insert-your-google-cse-id>",
+            "program-result-limit": 100,
             "search-limit": 1000,
         },
     }
@@ -35,6 +36,8 @@ class Config:
 
         if not config_path.exists():
             config_path.write_text(json.dumps(DEFAULT_CONFIG, indent=4), encoding="utf-8")
+            # Exit the program with a message to the user
+            raise SystemExit(f"Config file created at {config_path}. Please update it with your API keys.")
 
         if not search_count_path.exists():
             search_count_path.write_text(json.dumps(DEFAULT_SEARCH_COUNT, indent=4), encoding="utf-8")
