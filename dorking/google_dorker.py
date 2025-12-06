@@ -39,6 +39,7 @@ class GoogleDorker:
                         num=results_to_request, # Use the calculated number of results
                         start=start_index
                     ).execute()
+                    self.config.increment_search_count()
 
                     # 2. Process returned items
                     if 'items' in result:
@@ -50,7 +51,6 @@ class GoogleDorker:
                         next_page_info = result['queries']['nextPage'][0]
                         start_index = next_page_info['startIndex']
                         page_number += 1
-                        self.config.increment_search_count()
                     else:
                         # 'nextPage' is absent, meaning we have reached the end of the results
                         break
