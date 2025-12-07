@@ -1,3 +1,4 @@
+import time
 from config import Config
 from googleapiclient.discovery import build
 from scopeminer import ProgramScope
@@ -5,7 +6,7 @@ from .dork_result import DorkResults
 from .scope_query_factory import ScopeQueryFactory
 
 class GoogleDorker:
-    def __init__(self, config: Config = None) -> None:
+    def __init__(self, config: Config) -> None:
         self._config = config
         google_config = self._config.get_google_config()
         self._api_key = google_config.get("api-key", "")
@@ -40,6 +41,9 @@ class GoogleDorker:
                         start=start_index
                     ).execute()
                     self._config.increment_search_count()
+                    
+                    # Introduce a small delay so as not to break the 100 queries per minute quota
+                    time.sleep(0.05)
 
                     # 2. Process returned items
                     if 'items' in result:

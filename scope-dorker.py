@@ -52,7 +52,7 @@ def main() -> None:
                 scopes = miner.get_program_scopes(auth_header, program_id, include_oos=args.out_of_scope)
                 program_scopes.append(scopes)
         else:
-            program_scopes.append(miner.get_all_scopes(auth_header, include_oos=args.out_of_scope))
+            program_scopes.extend(miner.get_all_scopes(auth_header, include_oos=args.out_of_scope))
     
         for program_scope in program_scopes:
             results = dorker.execute_dork(args.query, program_scope)
