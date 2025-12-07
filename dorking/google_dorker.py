@@ -43,7 +43,7 @@ class GoogleDorker:
                     self._config.increment_search_count()
                     
                     # Introduce a small delay so as not to break the 100 queries per minute quota
-                    time.sleep(0.05)
+                    time.sleep(0.1)
 
                     # 2. Process returned items
                     if 'items' in result:
