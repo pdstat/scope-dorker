@@ -1,5 +1,6 @@
 import argparse
 import base64
+import json
 from config import Config, ConfigFactory
 from dorking import GoogleDorker
 from scopeminer import H1ScopeMiner
@@ -18,7 +19,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-q",
         "--query",
-        required=True,
         help="The query portion of the dork to AND with the scoped site: clauses",
     )
     parser.add_argument(
@@ -32,6 +32,11 @@ def parse_args() -> argparse.Namespace:
         "--programs",
         nargs="+",
         help="List of HackerOne program IDs to include in the dorking process",
+    )
+    parser.add_argument(
+        "-os",
+        "--output-scopes",
+        help="Output the program scopes to a file",
     )
     
     return parser.parse_args()
@@ -63,13 +68,25 @@ def main() -> None:
                 )
             )
     
-        for program_scope in program_scopes:
-            results = dorker.execute_dork(args.query, program_scope)
-            if results is not None:
-                dork_results.append(results)
+        if args.output_scopes:
+            with open(args.output_scopes, "w") as f:
+                # Write output_scopes as JSON to file
+                json_scopes = [
+                    {
+                        "program": prog_scope.get_name(),
+                        "url_assets": prog_scope.get_url_assets(),
+                    }
+                    for prog_scope in program_scopes
+                ]
+                json.dump(json_scopes, f, indent=4)
+        else:
+            for program_scope in program_scopes:
+                results = dorker.execute_dork(args.query, program_scope)
+                if results is not None:
+                    dork_results.append(results)
 
-        for result in dork_results:
-            print(result)
+            for result in dork_results:
+               print(result)
     finally:
         config.write_search_count()
 
