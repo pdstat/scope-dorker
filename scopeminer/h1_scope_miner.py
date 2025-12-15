@@ -1,4 +1,5 @@
 import requests
+from pathlib import Path
 from requests.adapters import HTTPAdapter, Retry
 
 from .scope_miner import ScopeMiner
@@ -40,7 +41,12 @@ class H1ScopeMiner(ScopeMiner):
             res = s.get(current_url, headers={"Authorization": f"Basic {authz}"})
 
             if res.status_code == 401:
-                raise SystemExit(f"Failed to get scopes for program check API keys")
+                user_home = Path.home()
+                config_dir = user_home / ".config/scope-dorker"
+                config_path = config_dir / "config.json"
+                raise SystemExit(f"Failed to get scopes for program check API keys configured in {config_path}")
+            elif res.status_code == 404:
+                raise SystemExit(f"Program '{handle}' not found")
 
             data = res.json()
             scopes = data.get("data", [])
@@ -58,15 +64,19 @@ class H1ScopeMiner(ScopeMiner):
             if not current_url:
                 break
 
-        return ProgramScope(name=handle, url_assets=program_scopes)
+        return ProgramScope(platform="HackerOne", name=handle, url_assets=program_scopes)
 
     def __get_program_handles(self, authz: str) -> list[str]:
         handles = []
         current_url = PROGRAMS_API_URL
         while True:
             res = requests.get(current_url, headers={"Authorization": f"Basic {authz}"})
-
-            if res.status_code != 200:
+            if res.status_code == 401:
+                user_home = Path.home()
+                config_dir = user_home / ".config/scope-dorker"
+                config_path = config_dir / "config.json"
+                raise SystemExit(f"Failed to get program handles check API keys configured in {config_path}")
+            elif res.status_code != 200:
                 raise SystemExit(f"Failed to get programs: {res.status_code} {res.text}")
         
             data = res.json()
