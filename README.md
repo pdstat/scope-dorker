@@ -6,7 +6,7 @@ Scope dorker is a tool to perform Google dorks across all or specific programs o
 
 This tool makes use of the following API's and as such requires API keys to be setup.
 
-- Hackerone programs/scopes list API (`https://api.hackerone.com/hacker-resources/#programs-get-programs` and `https://api.hackerone.com/hacker-resources/#programs-get-structured-scopes`)
+- Hackerone programs/scopes list API (`https://api.hackerone.com/hacker-resources/#programs-get-programs` and `https://api.hackerone.com/hacker-resources/#programs-get-structured-scopes`) - `https://hackerone.com/settings/api_token/edit`
 - A Google Customisable Search Engine (`https://programmablesearchengine.google.com/about/`) configured to search the entire web.
 - A Google API key for the custom-search JSON API `https://developers.google.com/custom-search/v1/overview`
 
